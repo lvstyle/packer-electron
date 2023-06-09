@@ -12,6 +12,8 @@ asarUnpack:
   - resources/**
 afterSign: build/notarize.js
 win:
+  target:
+    - portable
   executableName: react
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
@@ -37,6 +39,3 @@ linux:
 appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
-publish:
-  provider: generic
-  url: https://example.com/auto-updates

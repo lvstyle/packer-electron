@@ -28,7 +28,10 @@ const createWindow = (url, options) => {
     height: 720,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false
+      nodeIntegrationInSubFrames: true,
+      contextIsolation: false,
+      sandbox: false,
+      webviewTag: true
     },
     ...options
   })
@@ -70,10 +73,11 @@ function initial() {
 
   context.mainWindow.once('ready-to-show', () => {
     context.mainWindow.webContents.openDevTools({ mode: 'detach' })
+
+    injectHook(context.mainWindow)
   })
 
   handleListener()
-  injectHook(context.mainWindow)
 }
 
 function handleListener() {
