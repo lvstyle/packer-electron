@@ -1,0 +1,2 @@
+const { screen } = require('electron')
+
