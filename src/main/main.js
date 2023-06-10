@@ -1,5 +1,9 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron')
 
+
+//解决10.X版本跨域不成功问题(上线删除)
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+
 const context = {
   mainWindow: null,
   leftWindow: null,
@@ -21,7 +25,6 @@ const getRightDisplay = () => {
 
   return getTargetDisplay((display) => display.bounds.x > primaryDisplay.bounds.x)?.[0]
 }
-
 const createWindow = (url, options) => {
   const win = new BrowserWindow({
     width: 1280,
@@ -31,7 +34,8 @@ const createWindow = (url, options) => {
       nodeIntegrationInSubFrames: true,
       contextIsolation: false,
       sandbox: false,
-      webviewTag: true
+      webviewTag: true,
+      webSecurity: false
     },
     ...options
   })
@@ -82,6 +86,7 @@ function initial() {
 
 function handleListener() {
   ipcMain.on('left-window', (e, url) => {
+    console.log(url, 'url')
     const { bounds } = getLeftDisplay()
     const { x, y } = bounds
     context.leftWindow =
