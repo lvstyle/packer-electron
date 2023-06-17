@@ -1,8 +1,8 @@
 const { app, BrowserWindow, ipcMain, screen } = require('electron')
-
-
+app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', [`http://${ip}:30734`])
 //解决10.X版本跨域不成功问题(上线删除)
-app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors');
+app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
+const { ip } = require('./config/ipConfig')
 
 const context = {
   mainWindow: null,
@@ -73,44 +73,42 @@ function injectHook(win) {
 }
 
 function initial() {
-  context.mainWindow = createWindow('http://192.168.2.15:30734/login')
+  // context.mainWindow = createWindow('http://localhost:3000/Maps')
+  context.mainWindow = createWindow(`https://${ip}:30734/login`)
 
   context.mainWindow.once('ready-to-show', () => {
-    context.mainWindow.webContents.openDevTools({ mode: 'detach' })
-
-    injectHook(context.mainWindow)
+    // 打开控制台
+    // context.mainWindow.webContents.openDevTools({ mode: 'detach' })
+    context.mainWindow.webContents.on('did-navigate-in-page', (event, url) => {
+      if (url === `http://${ip}:30734/maps`) {
+        injectHook(context.mainWindow)
+      }
+    })
   })
-
   handleListener()
 }
-
 function handleListener() {
   ipcMain.on('left-window', (e, url) => {
-    console.log(url, 'url')
     const { bounds } = getLeftDisplay()
     const { x, y } = bounds
-    context.leftWindow =
-      context.leftWindow ||
-      createWindow(url, {
-        x,
-        y
-      })
-
-    context.leftWindow.show()
+    if (!context.leftWindow) {
+      context.leftWindow = createWindow(url, { x, y })
+      context.leftWindow.show()
+    } else {
+      context.leftWindow.loadURL(url)
+    }
     context.leftWindow.setFullScreen(true)
   })
 
   ipcMain.on('right-window', (e, url) => {
     const { bounds } = getRightDisplay()
     const { x, y } = bounds
-    context.rightWindow =
-      context.rightWindow ||
-      createWindow(url, {
-        x,
-        y
-      })
-
-    context.rightWindow.show()
+    if (!context.rightWindow) {
+      context.rightWindow = createWindow(url, { x, y })
+      context.rightWindow.show()
+    } else {
+      context.rightWindow.loadURL(url)
+    }
     context.rightWindow.setFullScreen(true)
   })
 }
