@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron')
+const { app, BrowserWindow, ipcMain, screen, session } = require('electron')
 
 const context = {
   mainWindow: null,
@@ -69,7 +69,7 @@ function injectHook(win) {
 }
 
 function initial() {
-  context.mainWindow = createWindow('http://192.168.2.15:30734/login')
+  context.mainWindow = createWindow('https://baidu.com')
 
   context.mainWindow.once('ready-to-show', () => {
     context.mainWindow.webContents.openDevTools({ mode: 'detach' })
@@ -78,6 +78,13 @@ function initial() {
   })
 
   handleListener()
+  handleVoice()
+}
+
+function handleVoice() {
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    callback(permission === 'media')
+  })
 }
 
 function handleListener() {
