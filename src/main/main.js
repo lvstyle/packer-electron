@@ -1,6 +1,11 @@
 const { app, BrowserWindow, ipcMain, screen, protocol, session } = require('electron')
 
-const { ip } = require('./config/ipConfig')
+// 部署到场外打包时
+// const ip = '192.168.2.12' // 场外基地ip
+
+// 部署到场内
+const ip = '192.168.2.15' // 智元场内ip
+
 app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', [`http://${ip}:30734`])
 //解决10.X版本跨域不成功问题(上线删除)
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
@@ -9,6 +14,22 @@ const context = {
   leftWindow: null,
   rightWindow: null
 }
+
+// 必须在 app ready 之前注册
+protocol.registerSchemesAsPrivileged([
+  {
+    scheme: 'http',
+    privileges: {
+      standard: true,
+      secure: true,
+      bypassCSP: true,
+      allowServiceWorkers: true,
+      supportFetchAPI: true,
+      corsEnabled: true,
+      stream: true
+    }
+  }
+])
 
 function getTargetDisplay(filter) {
   return [...screen.getAllDisplays()].filter(filter)
@@ -76,20 +97,6 @@ function initial() {
   // context.mainWindow = createWindow('http://localhost:3000/Maps')
   context.mainWindow = createWindow(`https://${ip}:30734/login`)
 
-  protocol.registerSchemesAsPrivileged([
-    {
-      scheme: 'http',
-      privileges: {
-        standard: true,
-        secure: true,
-        bypassCSP: true,
-        allowServiceWorkers: true,
-        supportFetchAPI: true,
-        corsEnabled: true,
-        stream: true
-      }
-    }
-  ])
   app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-secure', [
     `http://${ip}:30734/maps`
   ])
