@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, screen } = require('electron')
+const { app, BrowserWindow, ipcMain, screen, protocol } = require('electron')
 app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', [`http://${ip}:30734`])
 //解决10.X版本跨域不成功问题(上线删除)
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
@@ -75,6 +75,24 @@ function injectHook(win) {
 function initial() {
   // context.mainWindow = createWindow('http://localhost:3000/Maps')
   context.mainWindow = createWindow(`https://${ip}:30734/login`)
+
+  protocol.registerSchemesAsPrivileged([
+    {
+      scheme: 'http',
+      privileges: {
+        standard: true,
+        secure: true,
+        bypassCSP: true,
+        allowServiceWorkers: true,
+        supportFetchAPI: true,
+        corsEnabled: true,
+        stream: true
+      }
+    }
+  ])
+  app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-secure', [
+    `http://${ip}:30734/maps`
+  ])
 
   context.mainWindow.once('ready-to-show', () => {
     // 打开控制台
