@@ -1,9 +1,9 @@
-const { app, BrowserWindow, ipcMain, screen, protocol } = require('electron')
+const { app, BrowserWindow, ipcMain, screen, protocol, session } = require('electron')
+
+const { ip } = require('./config/ipConfig')
 app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', [`http://${ip}:30734`])
 //解决10.X版本跨域不成功问题(上线删除)
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
-const { ip } = require('./config/ipConfig')
-
 const context = {
   mainWindow: null,
   leftWindow: null,
@@ -104,6 +104,13 @@ function initial() {
     })
   })
   handleListener()
+  handleVoice()
+}
+
+function handleVoice() {
+  session.defaultSession.setPermissionRequestHandler((webContents, permission, callback) => {
+    callback(permission === 'media')
+  })
 }
 function handleListener() {
   ipcMain.on('left-window', (e, url) => {
