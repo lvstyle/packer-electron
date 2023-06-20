@@ -12,9 +12,9 @@ const p = path.join(process.cwd(), 'ip.txt')
 
 const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : '192.168.2.15'
 
-app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', [`http://${ip}:30734`])
+app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', `http://${ip}:30734`)
 // 不支持了
-app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-secure', [`http://${ip}:30734`])
+app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-secure', `http://${ip}:30734`)
 //解决10.X版本跨域不成功问题(上线删除)
 app.commandLine.appendSwitch('disable-features', 'OutOfBlinkCors')
 const context = {
