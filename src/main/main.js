@@ -10,7 +10,7 @@ const fs = require('fs')
 
 const p = path.join(process.cwd(), 'ip.txt')
 
-const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : '192.168.2.15'
+const ip = fs.existsSync(p) ? fs.readFileSync(p, 'utf-8') : '192.168.2.12'
 
 app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-origin', `http://${ip}:30734`)
 // 不支持了
