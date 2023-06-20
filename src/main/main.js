@@ -104,7 +104,7 @@ function injectHook(win) {
 
 function initial() {
   // context.mainWindow = createWindow('http://localhost:3000/Maps')
-  context.mainWindow = createWindow(`https://${ip}:30734/login`)
+  context.mainWindow = createWindow(`http://${ip}:30734/login`)
 
   context.mainWindow.once('ready-to-show', () => {
     // 打开控制台
