@@ -64,7 +64,8 @@ const createWindow = (url, options) => {
       contextIsolation: false,
       sandbox: false,
       webviewTag: true,
-      webSecurity: false
+      webSecurity: false,
+      experimentalFeatures: true
     },
     ...options
   })
@@ -104,10 +105,6 @@ function injectHook(win) {
 function initial() {
   // context.mainWindow = createWindow('http://localhost:3000/Maps')
   context.mainWindow = createWindow(`https://${ip}:30734/login`)
-
-  app.commandLine.appendSwitch('unsafely-treat-insecure-origin-as-secure', [
-    `http://${ip}:30734/maps`
-  ])
 
   context.mainWindow.once('ready-to-show', () => {
     // 打开控制台
